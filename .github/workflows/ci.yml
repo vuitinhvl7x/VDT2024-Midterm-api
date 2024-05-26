@@ -25,9 +25,6 @@ jobs:
         run: npm install
         working-directory: ./users
 
-      - name: Build
-        run: npm run build
-
       - name: Compile Js
         run: npm run build
         working-directory: ./users

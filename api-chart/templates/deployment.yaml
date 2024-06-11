@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.nameOverride | default .Chart.Name }}
+  labels:
+    app: {{ .Values.nameOverride | default .Chart.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -38,9 +40,7 @@ spec:
               key: DB_NAME
         - name: DB_PORT
           value: "5432"
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,51 +58,45 @@ spec:
         app: {{ .Release.Name }}-postgresql
     spec:
       containers:
-        - name: postgresql
-          image: "{{ .Values.postgresql.image.registry }}/{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
-          ports:
-            - containerPort: {{ .Values.postgresql.service.port }}
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.name }}
-                  key: DB_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.name }}
-                  key: DB_PASS
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.name }}
-                  key: DB_NAME
-          resources:
-            {{- toYaml .Values.postgresql.resources | nindent 12 }}
-
+      - name: postgresql
+        image: "{{ .Values.postgresql.image.registry }}/{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.postgresql.service.port }}
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: DB_PASS
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: DB_NAME
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: DB_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: DB_PORT
+        resources:
+          {{- toYaml .Values.postgresql.resources | nindent 8 }}
 ---
-
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: {{ .Release.Name }}-api
-#   labels:
-#     {{- include "api-chart.labels" . | nindent 4 }}
-# spec:
-#   type: {{ .Values.service.type }}
-#   ports:
-#     - port: {{ .Values.service.port }}
-#       targetPort: {{ .Values.service.port }}
-#       protocol: TCP
-#       name: {{ .Values.service.portName }}
-#   selector:
-#     {{- include "api-chart.selectorLabels" . | nindent 4 }}
-
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.nameOverride | default .Chart.Name }}
+  labels:
+    app: {{ .Values.nameOverride | default .Chart.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:

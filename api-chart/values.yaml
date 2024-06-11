@@ -42,7 +42,7 @@ securityContext: {}
 
 service:
   type: NodePort
-  nodePOrt: 30001
+  nodePort: 30001
   port: 4000
   portName: api
 
@@ -120,6 +120,7 @@ secrets:
     DB_PORT: NTQzMg==              # "5432" encoded in base64
 
 postgresql:
+  enabled: true
   image:
     registry: docker.io
     repository: postgres

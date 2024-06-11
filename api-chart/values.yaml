@@ -2,14 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   registry: docker.io
-  repository: xuanhaj/users-app
+  repository: xuanhaj/api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "v1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -108,3 +108,23 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+secrets:
+  name: api-secrets
+  type: Opaque
+  data:
+    DB_USER: cG9zdGdyZXM=          # "postgres" encoded in base64
+    DB_PASS: eHVhbmhhaTIwMTA0MQ==  # "xuanhai201041" encoded in base64
+    DB_NAME: U3R1ZGVudExpc3Q=      # "StudentList" encoded in base64
+    DB_HOST: ZGI=                  # "db" encoded in base64
+    DB_PORT: NTQzMg==              # "5432" encoded in base64
+
+postgresql:
+  image:
+    registry: docker.io
+    repository: postgres
+    tag: latest
+  service:
+    name: postgresql
+    port: 5432
+  resources: {}

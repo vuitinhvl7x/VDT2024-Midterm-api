@@ -4,6 +4,7 @@ const sequelize = require("./config/database");
 const studentRouter = require("./routes/studentRouter");
 const metricsMiddleware = require("./middleware/metricsMiddleware");
 const { register } = require("./metrics/metrics");
+const metricsRouter = require("./routes/metricsRouter");
 
 require("dotenv").config();
 
@@ -19,12 +20,13 @@ sequelize.sync().then(() => console.log("Database is ready"));
 app.use(metricsMiddleware);
 
 // Expose metrics tại endpoint /metrics
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', register.contentType);
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
   res.end(await register.metrics());
 });
 
 // Define routes using studentRouter
 app.use("/api/students", studentRouter);
+app.use("/api", metricsRouter);
 
 module.exports = app;

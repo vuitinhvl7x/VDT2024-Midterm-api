@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.nameOverride | default .Chart.Name }}
-        image: "{{ .Values.postgresql.image.registry }}/{{ .Values.postgresql.image.repository }}:latest"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.port }}

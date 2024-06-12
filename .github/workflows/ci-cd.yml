@@ -54,6 +54,9 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/api
 
+      - name: Print Docker tags
+        run: echo ${{ steps.meta2.outputs.tags }}
+
       - name: Build and Push Docker API Image
         uses: docker/build-push-action@v4
         id: docker_build_backend

@@ -62,8 +62,13 @@ jobs:
       - name: Sanitize tags
         id: sanitize_tags
         run: |
-          tags=${{ steps.meta2.outputs.tags }}
-          sanitized_tags=$(echo $tags | sed 's|,| |g' | xargs -n1 | grep -v '^/')
+          sanitized_tags=""
+          for tag in $(echo ${{ steps.meta2.outputs.tags }} | sed 's|,| |g'); do
+            if [[ $tag != /* ]]; then
+              sanitized_tags="$sanitized_tags,$tag"
+            fi
+          done
+          sanitized_tags=${sanitized_tags#","}
           echo "sanitized_tags=$sanitized_tags" >> $GITHUB_ENV
           echo "::set-output name=sanitized_tags::$sanitized_tags"
 

@@ -64,6 +64,10 @@ jobs:
           TAG=$(echo "${{ steps.meta2.outputs.tags }}" | tr ',' '\n' | grep '/api:v')
           echo "TAG=${TAG}" >> $GITHUB_ENV
 
+      - name: Print filtered Docker tags
+        run: |
+          echo "Filtered TAGs: $TAG"
+
       - name: Build and Push Docker API Image
         uses: docker/build-push-action@v4
         id: docker_build_backend

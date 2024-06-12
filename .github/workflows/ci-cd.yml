@@ -52,6 +52,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/api
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
 
       - name: Build and Push Docker API Image
         uses: docker/build-push-action@v4
@@ -63,6 +66,7 @@ jobs:
           tags: ${{ steps.meta2.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
   update-config:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest

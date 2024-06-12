@@ -69,6 +69,10 @@ jobs:
             fi
           done
           sanitized_tags=${sanitized_tags#","}
+          if [ -z "$sanitized_tags" ]; then
+            echo "No valid tags found."
+            exit 1
+          fi
           echo "sanitized_tags=$sanitized_tags" >> $GITHUB_ENV
           echo "::set-output name=sanitized_tags::$sanitized_tags"
 

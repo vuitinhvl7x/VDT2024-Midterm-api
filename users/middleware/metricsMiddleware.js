@@ -1,10 +1,21 @@
-const { httpRequestDurationMicroseconds } = require("../metrics/metrics");
+const {
+  httpRequestCounter,
+  httpRequestDuration,
+} = require("../metrics/metrics");
 
-module.exports = (req, res, next) => {
-  const end = httpRequestDurationMicroseconds.startTimer();
+const metricsMiddleware = (req, res, next) => {
+  const end = httpRequestDuration.startTimer();
   res.on("finish", () => {
-    const route = req.route ? req.route.path : req.path;
-    end({ method: req.method, route, code: res.statusCode });
+    httpRequestCounter
+      .labels(req.method, req.path, res.statusCode.toString())
+      .inc();
+    end({
+      method: req.method,
+      route: req.path,
+      status_code: res.statusCode.toString(),
+    });
   });
   next();
 };
+
+module.exports = metricsMiddleware;

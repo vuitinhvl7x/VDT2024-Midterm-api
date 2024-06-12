@@ -16,14 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 
 sequelize.sync().then(() => console.log("Database is ready"));
 
-// Sử dụng middleware để đo thời gian xử lý request
+// Sử dụng middleware để đo thời gian xử lý request và đếm số lượng request
 app.use(metricsMiddleware);
-
-// Expose metrics tại endpoint /metrics
-app.get("/metrics", async (req, res) => {
-  res.set("Content-Type", register.contentType);
-  res.end(await register.metrics());
-});
 
 // Define routes using studentRouter
 app.use("/api/students", studentRouter);

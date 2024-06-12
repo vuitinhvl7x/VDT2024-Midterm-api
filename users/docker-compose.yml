@@ -18,6 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: api:v3
     ports:
       - "4000:4000"
     environment:

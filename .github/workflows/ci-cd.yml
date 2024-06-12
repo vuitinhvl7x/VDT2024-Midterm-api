@@ -51,7 +51,13 @@ jobs:
       - name: Build and push Docker image
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
-          docker buildx build --push --tag ${{ secrets.DOCKER_USERNAME }}/api:${TAG_NAME} ./users
+          docker buildx build --push --tag ${{ secrets.DOCKER_USERNAME }}/api:${TAG_NAME} ./users'
+
+      - name: Extract tag name
+        id: get_tag_name
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_ENV
 
   update-config:
     if: startsWith(github.ref, 'refs/tags/')

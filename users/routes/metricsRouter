@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+
+router.post("/metrics", (req, res) => {
+  const metric = req.body;
+  console.log("Received metric:", metric);
+  res.status(200).send("Metric received");
+});
+
+module.exports = router;

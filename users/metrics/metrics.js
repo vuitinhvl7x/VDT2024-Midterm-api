@@ -1,20 +1,34 @@
 const client = require("prom-client");
 const register = new client.Registry();
 
-// Thu thập các số liệu mặc định
 client.collectDefaultMetrics({ register });
 
-// Định nghĩa một số metric tùy chỉnh (tùy chọn)
-const httpRequestDurationMicroseconds = new client.Histogram({
-  name: "http_request_duration_ms",
-  help: "Duration of HTTP requests in ms",
-  labelNames: ["method", "route", "code"],
-  buckets: [50, 100, 200, 300, 400, 500, 1000],
-});
+const createCounter = (name, help, labelNames) => {
+  const counter = new client.Counter({ name, help, labelNames });
+  register.registerMetric(counter);
+  return counter;
+};
 
-register.registerMetric(httpRequestDurationMicroseconds);
+const createHistogram = (name, help, labelNames, buckets) => {
+  const histogram = new client.Histogram({ name, help, labelNames, buckets });
+  register.registerMetric(histogram);
+  return histogram;
+};
+
+const httpRequestCounter = createCounter(
+  "http_request_total",
+  "Total number of HTTP requests",
+  ["method", "route", "status_code"]
+);
+const httpRequestDuration = createHistogram(
+  "http_request_duration_seconds",
+  "Duration of HTTP requests in seconds",
+  ["method", "route", "status_code"],
+  [0.1, 0.5, 1, 2, 5]
+);
 
 module.exports = {
   register,
-  httpRequestDurationMicroseconds,
+  httpRequestCounter,
+  httpRequestDuration,
 };

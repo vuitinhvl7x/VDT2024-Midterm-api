@@ -1,10 +1,10 @@
 const express = require("express");
+const { register } = require("../metrics/metrics");
 const router = express.Router();
 
-router.post("/metrics", (req, res) => {
-  const metric = req.body;
-  console.log("Received metric:", metric);
-  res.status(200).send("Metric received");
+router.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
 });
 
 module.exports = router;

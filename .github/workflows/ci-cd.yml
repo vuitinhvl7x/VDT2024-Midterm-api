@@ -51,13 +51,21 @@ jobs:
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
-        id: buildx 
+        id: buildx
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta2
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/api
+
+      - name: Sanitize tags
+        id: sanitize_tags
+        run: |
+          tags=${{ steps.meta2.outputs.tags }}
+          sanitized_tags=$(echo $tags | sed 's|,| |g' | xargs -n1 | grep -v '^/')
+          echo "sanitized_tags=$sanitized_tags" >> $GITHUB_ENV
+          echo "::set-output name=sanitized_tags::$sanitized_tags"
 
       - name: Build and Push Docker API Image
         uses: docker/build-push-action@v4
@@ -66,7 +74,7 @@ jobs:
           context: ./users
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ steps.meta2.outputs.tags }}
+          tags: ${{ steps.sanitize_tags.outputs.sanitized_tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

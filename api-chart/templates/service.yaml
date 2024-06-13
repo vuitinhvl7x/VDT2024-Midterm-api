@@ -1,13 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { include "api-chart.fullname" . } }
-  labels: { { - include "api-chart.labels" . | nindent 4 } }
+  name: {{ .Values.nameOverride | default .Chart.Name }}
 spec:
-  type: { { .Values.service.type } }
+  type: {{ .Values.service.type }}
   ports:
-    - port: { { .Values.service.port } }
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector: { { - include "api-chart.selectorLabels" . | nindent 4 } }
+    - port: {{ .Values.service.port }}
+      targetPort: 4000
+      nodePort: {{ .Values.service.nodePort }}
+  selector:
+    app: {{ .Values.nameOverride | default .Chart.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgresql

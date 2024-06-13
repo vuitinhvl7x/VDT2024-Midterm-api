@@ -1,5 +1,5 @@
 const express = require("express");
-const { register } = require("./metrics");
+const { register } = require("../metrics/metrics");
 const router = express.Router();
 
 router.get("/metrics", async (req, res) => {

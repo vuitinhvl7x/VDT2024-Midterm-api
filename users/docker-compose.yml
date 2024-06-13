@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: xuanhaj/api:v5
+    image: xuanhaj/api:v6
     ports:
       - "4000:4000"
     environment:

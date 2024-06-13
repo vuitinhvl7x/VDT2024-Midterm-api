@@ -2,9 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const studentRouter = require("./routes/studentRouter");
+const userRouter = require("./routes/userRouter");
 const metricsMiddleware = require("./middleware/metricsMiddleware");
-const { register } = require("./metrics/metrics");
-const metricsRouter = require("./routes/metricsRouter");
+const {
+  authenticateToken,
+  authorizeRole,
+} = require("./middleware/authMiddleware");
 
 require("dotenv").config();
 
@@ -20,7 +23,7 @@ sequelize.sync().then(() => console.log("Database is ready"));
 app.use(metricsMiddleware);
 
 // Define routes using studentRouter
-app.use("/api/students", studentRouter);
-app.use(metricsRouter);
+app.use("/api/students", authenticateToken, studentRouter);
+app.use("/api/users", userRouter);
 
 module.exports = app;

@@ -1,12 +1,31 @@
 const express = require("express");
 const router = express.Router();
 const studentController = require("../controllers/studentController");
+const {
+  authenticateToken,
+  authorizeRole,
+} = require("../middleware/authMiddleware");
 
 // Define routes
-router.get("/", studentController.findAll);
-router.get("/:id", studentController.findById);
-router.post("/", studentController.create);
-router.put("/:id", studentController.update);
-router.delete("/:id", studentController.deleteById);
+router.get("/", authenticateToken, studentController.findAll);
+router.get("/:id", authenticateToken, studentController.findById);
+router.post(
+  "/",
+  authenticateToken,
+  authorizeRole("admin"),
+  studentController.create
+);
+router.put(
+  "/:id",
+  authenticateToken,
+  authorizeRole("admin"),
+  studentController.update
+);
+router.delete(
+  "/:id",
+  authenticateToken,
+  authorizeRole("admin"),
+  studentController.deleteById
+);
 
 module.exports = router;

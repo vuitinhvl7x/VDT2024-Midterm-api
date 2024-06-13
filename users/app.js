@@ -21,6 +21,6 @@ app.use(metricsMiddleware);
 
 // Define routes using studentRouter
 app.use("/api/students", studentRouter);
-app.use("/api", metricsRouter);
+app.use(metricsRouter);
 
 module.exports = app;

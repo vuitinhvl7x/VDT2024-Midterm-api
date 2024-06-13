@@ -29,7 +29,7 @@ RUN npm ci --only=production
 # Copy the application code from the build stage
 COPY --from=build /app ./
 
-# Expose the port the app runs on
+# Expose the port the app runs DB_HOST
 EXPOSE 4000
 
 # Command to run the application

@@ -4,7 +4,6 @@ metadata:
   name: {{ .Values.nameOverride | default .Chart.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  # replicas: 10
   selector:
     matchLabels:
       app: {{ .Values.nameOverride | default .Chart.Name }}
@@ -56,7 +55,7 @@ spec:
     spec:
       containers:
       - name: postgresql
-        image: "{{ .Values.postgresql.image.registry }}/{{ .Values.postgresql.image.repository }}:latest"
+        image: "{{ .Values.postgresql.image.registry }}/{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
         ports:
         - containerPort: {{ .Values.postgresql.service.port }}
         env:
